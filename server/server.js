@@ -10,7 +10,6 @@ const port = process.env.PORT || 1814;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, './client/build')));
 
 // Database Connection
 mongoose
@@ -31,9 +30,12 @@ const appSchema = new mongoose.Schema({
 const App = mongoose.model('App', appSchema);
 
 // API Endpoints
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './client/build/index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+}
 
 app.post('/save-app', async (req, res) => {
   const { name, image, description } = req.body;
