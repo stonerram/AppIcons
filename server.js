@@ -7,11 +7,9 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 1814;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database Connection
 mongoose
   .connect(process.env.MDBURL, {
     useNewUrlParser: true,
@@ -20,7 +18,6 @@ mongoose
   .then(() => console.log('MongoDB connected successfully'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// Schema & Model
 const appSchema = new mongoose.Schema({
   name: { type: String, required: true },
   image: { type: String, required: true },
@@ -29,7 +26,6 @@ const appSchema = new mongoose.Schema({
 
 const App = mongoose.model('App', appSchema);
 
-// API Endpoints
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')));
   app.get('*', (req, res) => {
@@ -57,7 +53,6 @@ app.get('/get-apps', async (req, res) => {
   }
 });
 
-// Start Server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
